@@ -1,0 +1,44 @@
+This software is provided for free and is built using open-source libraries.
+This software is provided for free and is built using open-source libraries.
+Below is a list of the open-source software used in this application and their respective licenses.
+
+-------------------------------------------------------------------
+1. Python
+   Copyright (c) Python Software Foundation.
+   License: PSF License (GPL Compatible)
+
+2. OpenCV (opencv-python)
+   Copyright (c) OpenCV Team.
+   License: Apache License 2.0
+
+3. NumPy
+   Copyright (c) NumPy Developers.
+   License: BSD 3-Clause License
+
+4. PyAutoGUI
+   Copyright (c) Al Sweigart.
+   License: BSD License
+
+5. PyGetWindow
+   Copyright (c) Al Sweigart.
+   License: BSD License
+
+6. Pillow (PIL Fork)
+   Copyright (c) Jeffrey A. Clark (Alex Clark) and Contributors.
+   License: HPND License
+
+7. PyInstaller (Build Tool)
+   Copyright (c) PyInstaller Development Team.
+   License: GPLv2 (with Bootloader Exception for distribution)
+
+-------------------------------------------------------------------
+DISCLAIMER (면책 조항)
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+===================================================================
