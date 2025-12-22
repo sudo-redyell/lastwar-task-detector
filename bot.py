@@ -10,7 +10,9 @@ import winsound
 import os
 import sys
 
-# PyInstaller rss path
+TARGET_CONFIDENCE = 0.75
+
+# PyInstaller resource path
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
@@ -22,7 +24,7 @@ def resource_path(relative_path):
 class ImageSearchBot:
     def __init__(self, root):
         self.root = root
-        self.root.title("Lastwar task detector #1667 불타는아나고")
+        self.root.title("Lastwar task detector v1.1 #1667 불타는아나고")
         self.root.geometry("400x250")
         
         try:
@@ -68,6 +70,7 @@ class ImageSearchBot:
         self.combo_windows['values'] = clean_windows
         if clean_windows:
             self.combo_windows.current(0)
+
     # START
     def start_monitoring(self):
         target = self.combo_windows.get()
@@ -86,6 +89,7 @@ class ImageSearchBot:
         
         self.monitor_thread = threading.Thread(target=self.run_loop, daemon=True)
         self.monitor_thread.start()
+
     # STOP
     def stop_monitoring(self):
         self.is_running = False
@@ -110,35 +114,43 @@ class ImageSearchBot:
 
         while self.is_running:
             try:
+                self.lbl_status.config(text="🔎 Searching..", fg="black")
+                
                 # find window
                 windows = gw.getWindowsWithTitle(self.target_window_title)
                 if not windows:
                     print("Cannot find the window.")
+                    self.lbl_status.config(text="⛔ Cannot find the window!", fg="red")
                     time.sleep(1)
                     continue
                 
                 win = windows[0]
                 if win.isMinimized:
-                    # win.restore() 
-                    pass
+                    self.lbl_status.config(text="⛔ Window is minimized!", fg="red")
+                    time.sleep(1)
+                    continue
                 
                 # take screenshot
-                # region=(left, top, width, height)
                 screenshot = pyautogui.screenshot(region=(win.left, win.top, win.width, win.height))
                 frame = np.array(screenshot)
-                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR) # OpenCV 형식으로 변환
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR) 
 
                 result = cv2.matchTemplate(frame, template, cv2.TM_CCOEFF_NORMED)
+                
                 # THRESHOLD
-                threshold = 0.8
-                loc = np.where(result >= threshold)
+                loc = np.where(result >= TARGET_CONFIDENCE)
                 
                 if len(loc[0]) > 0:
-                    pt = (loc[1][0], loc[0][0]) # (x, y)
+                    y_idx = loc[0][0]
+                    x_idx = loc[1][0]
+                    pt = (x_idx, y_idx) 
+                    
+                    match_confidence = result[y_idx][x_idx]
+                    
                     center_x = win.left + pt[0] + w // 2
                     center_y = win.top + pt[1] + h // 2
-                    
-                    self.lbl_status.config(text=f"Found! Location: {pt}", fg="green")
+
+                    self.lbl_status.config(text=f"Found! Loc:{pt}, Conf: {match_confidence:.2f}", fg="green")
                     
                     # Beep
                     winsound.Beep(1000, 200)
@@ -147,12 +159,13 @@ class ImageSearchBot:
                     pyautogui.moveTo(center_x, center_y, duration=0.5)
                     time.sleep(2) 
                 else:
-                    self.lbl_status.config(text="🔎 Searching... (NO TASK)", fg="blue")
+                    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+                    self.lbl_status.config(text=f"🔎 Searching.. (Max Conf: {max_val:.2f})", fg="blue")
 
             except Exception as e:
                 print(f"ERROR: {e}")
 
-            # Delay 1s
+            # CPU 사용량을 줄이고 GUI 멈춤을 방지하기 위해 약간의 대기
             time.sleep(1)
 
 if __name__ == "__main__":
